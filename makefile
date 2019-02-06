@@ -54,7 +54,7 @@ INCLUDE_PATHS =\
 TARGET_NAME = RUN
 TEST_TARGET = $(TARGET_NAME).$(TARGET_EXTENSION)
 
-COMPILE = gcc -c
+COMPILE = gcc -c -MMD
 LINK = gcc
 INCLUDES = $(foreach dir,$(INCLUDE_PATHS),-I$(dir))
 CFLAGS = $(INCLUDES) -w
@@ -63,6 +63,8 @@ TEST_SRC = $(call get_src_from_dir_list, $(TEST_SRC_DIRS) $(UNITY_SRC))
 TEST_OBJ = $(addprefix $(OBJ_DIR)/,$(call src_to_o,$(TEST_SRC)))
 SRC = $(call get_src_from_dir_list,$(SRC_DIRS))
 OBJ = $(addprefix $(OBJ_DIR)/,$(call src_to_o,$(SRC)))
+ALL_SRC = $(SRC) $(TEST_SRC)
+DEPS = $(addprefix $(OBJ_DIR)/, $(ALL_SRC:.c=.d))
 
 test: $(TEST_TARGET)
 	$(SILENCE)./$(TARGET_NAME)
@@ -78,6 +80,8 @@ clean:
 	$(SILENCE)$(CLEANUP) $(OBJ)
 	$(SILENCE)$(CLEANUP) $(TEST_OBJ)
 	$(SILENCE)$(CLEANUP) *.$(TARGET_EXTENSION)
+	$(SILENCE)$(CLEANUP) $(DEPS)
 
 .PRECIOUS: %.$(TARGET_EXTENSION)
 .PRECIOUS: $(OBJ_DIR)%.o
+-include $(DEPS)
