@@ -1,2 +1,2 @@
 objs/src/LedDriver/LedDriver.o: src/LedDriver/LedDriver.c \
- include/LedDriver/LedDriver.h
+ include/LedDriver/LedDriver.h mocks/RuntimeErrorStub.h
